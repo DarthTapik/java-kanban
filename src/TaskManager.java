@@ -4,25 +4,24 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskManager {
-    private HashMap<Integer, Task> taskList;
-    private HashMap<Integer, SubTask> subTaskList;
-    private HashMap<Integer, Epic> epicList;
+    private Map<Integer, Task> taskList = new HashMap<>();
+    private Map<Integer, SubTask> subTaskList = new HashMap<>();
+    private Map<Integer, Epic> epicList = new HashMap<>();
     private int id = 0;
     public TaskManager(){
-        taskList = new HashMap<>();
-        subTaskList = new HashMap<>();
-        epicList = new HashMap<>();
         System.out.println("Менеджер задач инициализирован");
     }
 
-    public boolean addTask(Task task){
+    public void addTask(Task task){
         System.out.println("Задача " + id + " Добавлена");
         task.setId(id);
         taskList.put(id++,task);
-        return true;
+        /*
+         Не совсем понимаю зачем тут преинкремент, я ввожу в таблицу id после инкрементирую для следующих записей
+        */
     }
 
-    public boolean addSubTask(SubTask subTask){
+    public void addSubTask(SubTask subTask){
         subTask.setId(id);
         if (epicList.containsKey(subTask.getEpicId())) {
             System.out.println("Подзадача " + id + " Добавлена");
@@ -33,29 +32,28 @@ public class TaskManager {
             return;
         }
         System.out.println("Отсутствует Эпик заданный в подзадаче");
-        return false;
     }
 
-    public boolean addEpic(Epic epic){
+    public void addEpic(Epic epic){
         System.out.println("Эпик " + id + " Добавлен");
         epic.setId(id);
         epicList.put(id++, epic);
     }
 
-    public HashMap<Integer, Task> getAllTask(){
-        return  taskList;
+    public List<Task> getAllTask(){
+        return new ArrayList<>(taskList.values());
     }
 
-    public HashMap<Integer, SubTask> getAllSubTask(){
-        return  subTaskList;
+    public List<SubTask> getAllSubTask(){
+        return new ArrayList<>(subTaskList.values());
     }
 
-    public HashMap<Integer, Epic> getAllEpic(){
-        return  epicList;
+    public List<Epic> getAllEpic(){
+        return new ArrayList<>(epicList.values());
     }
 
 
-    public ArrayList<SubTask> getSubTasksByEpicId(int id){
+    public List<SubTask> getSubTasksByEpicId(int id){
         if (epicList.containsKey(id)){
             return epicList.get(id).getSubTaskList();
         }
@@ -90,17 +88,16 @@ public class TaskManager {
         }
     }
 
-    public boolean updateTask(Task task){
+    public void updateTask(Task task){
         if (taskList.containsKey(task.getId())){
             taskList.put(task.getId(), task);
             System.out.println("Задача " + task.getId() + " Обновлена");
-            return true;
+        } else {
+            System.out.println("Ключ не найден");
         }
-        System.out.println("Ключ не найден");
-        return false;
     }
 
-    public boolean updateSubTask(SubTask subTask){
+    public void updateSubTask(SubTask subTask){
         if (subTaskList.containsKey(subTask.getId())) {
             if (epicList.containsKey(subTask.getEpicId())) {
                 Epic epic = epicList.get(subTask.getEpicId());
@@ -109,36 +106,32 @@ public class TaskManager {
                 epic.addSubTask(subTask);
                 epic.updateStatus();
                 System.out.println("Подзадача " + subTask.getId() + " Обновлена");
-                return true;
             } else {
                 System.out.println("Отстутствует эпик заданный в подзадаче");
-                return false;
             }
+        } else {
+            System.out.println("Ключ не найден");
         }
-        System.out.println("Ключ не найден");
-        return false;
     }
 
-    public boolean updateEpic(Epic epic){
+    public void updateEpic(Epic epic){
         if (epicList.containsKey(epic.getId())) {
             epicList.put(epic.getId(), epic);
-            return true;
+        } else {
+            System.out.println("Ключ не найден");
         }
-        System.out.println("Ключ не найден");
-        return false;
     }
 
-    public boolean deleteTask(int id){
+    public void deleteTask(int id){
         if (taskList.containsKey(id)){
             taskList.remove(id);
             System.out.println("Задача " + id + " удалена");
-            return true;
+        } else {
+            System.out.println("Ключ " + id + " не найден");
         }
-        System.out.println("Ключ "+ id +" не найден");
-        return false;
     }
 
-    public boolean deleteSubTask(int id){
+    public void deleteSubTask(int id){
         if (subTaskList.containsKey(id)){
             SubTask subTask = subTaskList.get(id);
             subTaskList.remove(id);
@@ -146,13 +139,12 @@ public class TaskManager {
             epic.removeSubTask(subTask);
             epic.updateStatus();
             System.out.println("Подзадача " + id + " удалена");
-            return true;
+        } else {
+            System.out.println("Ключ " + id + " не найден");
         }
-        System.out.println("Ключ "+ id +" не найден");
-        return false;
     }
 
-    public boolean deleteEpic(int id) {
+    public void deleteEpic(int id) {
         if (epicList.containsKey(id)) {
             Epic epic = epicList.get(id);
             ArrayList<SubTask> subTasks = new ArrayList<>(epic.getSubTaskList()); // клонирование списка
@@ -160,12 +152,12 @@ public class TaskManager {
                 deleteSubTask(subTask.getId());
             }
             epicList.remove(id);
-
             System.out.println("Эпик " + id + " удален");
-            return true;
+
+        } else {
+            System.out.println("Ключ " + id + " не найден");
         }
-        System.out.println("Ключ " + id + " не найден");
-        return false;
+
     }
 
 }
