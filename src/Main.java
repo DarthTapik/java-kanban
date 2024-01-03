@@ -81,5 +81,40 @@ public class Main {
         taskManager.deleteEpic(2);
         System.out.println(taskManager.getAllSubTask());
 
+        System.out.println("Удаление всех задач всех типов");
+        System.out.println(taskManager.getAllTask());
+        taskManager.addEpic(epic1);
+        System.out.println(taskManager.getAllEpic());
+        subTask1.setEpicId(7);
+        taskManager.addSubTask(subTask1);
+        System.out.println(taskManager.getAllSubTask());
+        taskManager.deleteAll();
+        System.out.println(taskManager.getAllTask());
+        System.out.println(taskManager.getAllEpic());
+        System.out.println(taskManager.getAllSubTask());
+
+        System.out.println("Удаление всех задач Task");
+        taskManager.addTask(task1);
+        System.out.println(taskManager.getAllTask());
+        taskManager.deleteAllTasks();
+        System.out.println(taskManager.getAllTask());
+
+        System.out.println("Удаление всех Эпиков и их подзадач");
+        taskManager.addEpic(epic1);
+        subTask1.setEpicId(10);
+        taskManager.addSubTask(subTask1);
+        System.out.println(taskManager.getAllEpic());
+        System.out.println(taskManager.getAllSubTask());
+        taskManager.deleteAllEpic();
+        System.out.println(taskManager.getAllEpic());
+        System.out.println(taskManager.getAllSubTask());
+
+        System.out.println("Удаление всех подзадач");
+        taskManager.addEpic(epic1);
+        subTask1.setEpicId(12);
+        taskManager.addSubTask(subTask1);
+        System.out.println(taskManager.getAllSubTask());
+        taskManager.deleteAllSubTask();
+        System.out.println(taskManager.getAllSubTask());
     }
 }

@@ -157,7 +157,29 @@ public class TaskManager {
         } else {
             System.out.println("Ключ " + id + " не найден");
         }
+    }
 
+    public void deleteAll(){
+        epicList.clear();
+        taskList.clear();
+        subTaskList.clear();
+        System.out.println("Все задачи удалены");
+    }
+
+    public void deleteAllTasks(){
+        taskList.clear();
+        System.out.println("Задачи удалены");
+    }
+
+    public void deleteAllEpic(){
+        epicList.clear();
+        subTaskList.clear();
+        System.out.println("Эпики и их подзадачи удалены");
+    }
+
+    public void deleteAllSubTask(){
+        subTaskList.clear();
+        System.out.println("Подзадачи удалены");
     }
 
 }
