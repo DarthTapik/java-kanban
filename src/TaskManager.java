@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TaskManager {
     private HashMap<Integer, Task> taskList;
@@ -27,8 +29,8 @@ public class TaskManager {
             Epic epic = epicList.get(subTask.getEpicId());
             subTaskList.put(id++, subTask);
             epic.addSubTask(subTask);
-            epic.isCompleted();
-            return true;
+            epic.updateStatus();
+            return;
         }
         System.out.println("Отсутствует Эпик заданный в подзадаче");
         return false;
@@ -38,7 +40,6 @@ public class TaskManager {
         System.out.println("Эпик " + id + " Добавлен");
         epic.setId(id);
         epicList.put(id++, epic);
-        return true;
     }
 
     public HashMap<Integer, Task> getAllTask(){
@@ -106,7 +107,7 @@ public class TaskManager {
                 epic.removeSubTask(getSubTask(subTask.getId())); // Удаление для избежания повторений в списке
                 subTaskList.put(subTask.getId(), subTask);
                 epic.addSubTask(subTask);
-                epic.isCompleted();
+                epic.updateStatus();
                 System.out.println("Подзадача " + subTask.getId() + " Обновлена");
                 return true;
             } else {
@@ -143,7 +144,7 @@ public class TaskManager {
             subTaskList.remove(id);
             Epic epic = epicList.get(subTask.getEpicId());
             epic.removeSubTask(subTask);
-            epic.isCompleted();
+            epic.updateStatus();
             System.out.println("Подзадача " + id + " удалена");
             return true;
         }

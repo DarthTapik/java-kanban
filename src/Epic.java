@@ -20,7 +20,7 @@ public class Epic extends Task{
         return subTaskList;
     }
 
-    public void isCompleted() {
+    public void updateStatus() {
         boolean doneFlag = true;
         boolean newFlag = true;
         if (subTaskList.isEmpty())
