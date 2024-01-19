@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> taskList = new HashMap<>();
     private Map<Integer, SubTask> subTaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
-    private HistoryManager historyManager = new InMemoryHistoryManager();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
     private int id = 0;
     public InMemoryTaskManager(){
         System.out.println("Менеджер задач инициализирован");
