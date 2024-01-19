@@ -1,14 +1,21 @@
+package manager;
+
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> taskList = new HashMap<>();
     private Map<Integer, SubTask> subTaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
+    private HistoryManager historyManager = new InMemoryHistoryManager();
     private int id = 0;
-    public TaskManager(){
+    public InMemoryTaskManager(){
         System.out.println("Менеджер задач инициализирован");
     }
 
@@ -63,7 +70,9 @@ public class TaskManager {
 
     public Task getTask(int id){
         if (taskList.containsKey(id)){
-            return taskList.get(id);
+            Task task = taskList.get(id);
+            historyManager.add(task);
+            return task;
         } else{
             System.out.println("Задача не найдена");
             return null;
@@ -72,7 +81,9 @@ public class TaskManager {
 
     public SubTask getSubTask(int id){
         if (subTaskList.containsKey(id)){
-            return subTaskList.get(id);
+            SubTask subTask = subTaskList.get(id);
+            historyManager.add(subTask);
+            return subTask;
         } else{
             System.out.println("Подзадача не найдена");
             return null;
@@ -81,7 +92,9 @@ public class TaskManager {
 
     public Epic getEpic(int id){
         if (epicList.containsKey(id)){
-            return epicList.get(id);
+            Epic epic = epicList.get(id);
+            historyManager.add(epic);
+            return epic;
         } else{
             System.out.println("Эпик не найден");
             return null;
@@ -182,4 +195,7 @@ public class TaskManager {
         System.out.println("Подзадачи удалены");
     }
 
+    public List<Task> getHistory(){
+        return historyManager.getHistory();
+    }
 }
