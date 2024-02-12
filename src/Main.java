@@ -7,59 +7,46 @@ import tasks.Task;
 public class Main {
     public static void main(String[] args) {
         Task task1;
+        Task task2;
         Epic epic1;
+        Epic epic2;
         SubTask subTask1;
         SubTask subTask2;
+        SubTask subTask3;
+
         TaskManager manager = Managers.getDefault();
 
         System.out.println("Проверка истории простмотров задач");
         System.out.println("Инициализация задач");
-        task1 = new Task("Название 1", "Описание 1");
+        task1 = new Task("Задача 1", "Описание");
         manager.addTask(task1);
-        task1 = new Task("Название 2", "Описание 2");
-        manager.addTask(task1);
-        task1 = new Task("Название 3", "Описание 3");
-        manager.addTask(task1);
-        task1 = new Task("Название 4", "Описание 4");
-        manager.addTask(task1);
-
-        epic1 = new Epic("Название 5", "Описание 5");
+        task2 = new Task("Задача 2", "Описание");
+        manager.addTask(task2);
+        epic1 = new Epic("Эпик с подзадачами","Описание");
         manager.addEpic(epic1);
-        epic1 = new Epic("Название 6", "Описание 6");
-        manager.addEpic(epic1);
-
-        subTask1 = new SubTask("Название 7", "Описание 7", 4);
+        subTask1 = new SubTask("Подзадача 1", "Описание", 2);
+        subTask2 = new SubTask("Подзадача 2", "Описание", 2);
+        subTask3 = new SubTask("Подзадача 3", "Описание", 2);
         manager.addSubTask(subTask1);
-        subTask1 = new SubTask("Название 8", "Описание 8", 4);
-        manager.addSubTask(subTask1);
-        subTask1 = new SubTask("Название 9", "Описание 9", 5);
-        manager.addSubTask(subTask1);
-        subTask1 = new SubTask("Название 10", "Описание 10", 5);
-        manager.addSubTask(subTask1);
-
-        System.out.println("Пустая история");
+        manager.addSubTask(subTask2);
+        manager.addSubTask(subTask3);
+        epic2 = new Epic("Эпик без позадач", "Описание");
+        manager.addEpic(epic2);
         printAllTasks(manager);
 
-        System.out.println("Просматриваем 1 задачу");
-        System.out.println(manager.getTask(0));
-        System.out.println("История:");
-        System.out.println(manager.getHistory());
-        System.out.println("Просматриваем остальные 9 задач");
+        manager.getTask(0);
+        manager.getTask(0);
+        manager.getEpic(2);
         manager.getTask(1);
-        manager.getTask(2);
-        manager.getTask(3);
-        manager.getEpic(4);
-        manager.getEpic(5);
-        manager.getSubTask(6);
-        manager.getSubTask(7);
-        manager.getSubTask(8);
-        manager.getSubTask(9);
-        System.out.println("История:");
+        manager.getSubTask(4);
+        manager.getSubTask(3);
+        manager.getEpic(6);
         System.out.println(manager.getHistory());
-        System.out.println("Просматриваем еще 1 задачу"); // Задача с id 0 должна удалиться из истории
-        manager.getTask(3);
-        System.out.println("История:");
+        manager.deleteTask(0);
         System.out.println(manager.getHistory());
+        manager.deleteAllEpic();
+        System.out.println(manager.getHistory());
+
     }
 
     private static void printAllTasks(TaskManager manager) {
