@@ -39,7 +39,7 @@ class InMemoryHistoryManagerTest {
     @Test
     void remove() {
         historyManager.add(task);
-        ArrayList<Task> history = historyManager.getHistory();
+        List<Task> history = historyManager.getHistory();
         assertEquals(1, history.size());
         historyManager.remove(task.getId());
         history = historyManager.getHistory();

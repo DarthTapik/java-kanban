@@ -6,17 +6,18 @@ import util.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class InMemoryHistoryManager implements HistoryManager{
 
 
-    HashMap<Integer, Node<Task>> history = new HashMap<>();
-    Node<Task> head;
-    Node<Task> tail;
+    private HashMap<Integer, Node<Task>> history = new HashMap<>();
+    private Node<Task> head;
+    private Node<Task> tail;
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         ArrayList<Task> historyList = new ArrayList<>();
         Node<Task> prev = tail;
         while (prev != null){
