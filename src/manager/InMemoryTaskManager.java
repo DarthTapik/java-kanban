@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task){
         System.out.println("Задача " + id + " Добавлена");
         task.setId(id);
-        taskList.put(id++,task);
+        taskList.put(id++, new Task(task));
         /*
          Не совсем понимаю зачем тут преинкремент, я ввожу в таблицу id после инкрементирую для следующих записей
         */
@@ -30,8 +30,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicList.containsKey(subTask.getEpicId())) {
             System.out.println("Подзадача " + id + " Добавлена");
             Epic epic = epicList.get(subTask.getEpicId());
-            subTaskList.put(id++, subTask);
-            epic.addSubTask(subTask);
+            SubTask subTaskCopy = new SubTask(subTask);
+            subTaskList.put(id++, subTaskCopy);
+            epic.addSubTask(subTaskCopy);
             epic.updateStatus();
             return;
         }
@@ -41,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addEpic(Epic epic){
         System.out.println("Эпик " + id + " Добавлен");
         epic.setId(id);
-        epicList.put(id++, epic);
+        epicList.put(id++, new Epic(epic));
     }
 
     public List<Task> getAllTask(){
