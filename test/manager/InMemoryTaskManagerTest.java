@@ -9,6 +9,7 @@ import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -113,10 +114,37 @@ class InMemoryTaskManagerTest {
         assertEquals(Status.NEW ,epic.getStatus());
         SubTask subTask = new SubTask("SubTask", "Subtask description", Status.IN_PROGRESS, 0);
         taskManager.addSubTask(subTask);
-        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpic(0).getStatus());
         subTask.setStatus(Status.DONE);
         taskManager.updateSubTask(subTask);
-        assertEquals(Status.DONE, epic.getStatus());
+        assertEquals(Status.DONE, taskManager.getEpic(0).getStatus());
+    }
+
+    @Test
+    void checkThatDeletedSubTaskNotSaveInEpic(){
+        Epic epic = new Epic("Test epic", "Test epic description");
+        SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc", 0);
+
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(subTask1);
+
+        int epicsSubTaskListSize = taskManager.getEpic(0).getSubTaskList().size();
+        assertEquals(1, epicsSubTaskListSize);
+
+        taskManager.deleteSubTask(1);
+
+        epicsSubTaskListSize = taskManager.getEpic(0).getSubTaskList().size();
+        assertEquals(0, epicsSubTaskListSize);
+    }
+
+    @Test
+    void checkThatSetterNotChangeTaskInManager(){
+        Task task = new Task("Название 1", "Описание 1");
+        taskManager.addTask(task);
+        assertEquals("Название 1", taskManager.getTask(0).getName());
+
+        task.setName("Название 2");
+        assertEquals("Название 1", taskManager.getTask(0).getName());
     }
 
 }
