@@ -4,10 +4,7 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> taskList = new HashMap<>();
@@ -22,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task){
         System.out.println("Задача " + id + " Добавлена");
         task.setId(id);
-        taskList.put(id++,task);
+        taskList.put(id++, new Task(task));
         /*
          Не совсем понимаю зачем тут преинкремент, я ввожу в таблицу id после инкрементирую для следующих записей
         */
@@ -33,8 +30,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicList.containsKey(subTask.getEpicId())) {
             System.out.println("Подзадача " + id + " Добавлена");
             Epic epic = epicList.get(subTask.getEpicId());
-            subTaskList.put(id++, subTask);
-            epic.addSubTask(subTask);
+            SubTask subTaskCopy = new SubTask(subTask);
+            subTaskList.put(id++, subTaskCopy);
+            epic.addSubTask(subTaskCopy);
             epic.updateStatus();
             return;
         }
@@ -44,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addEpic(Epic epic){
         System.out.println("Эпик " + id + " Добавлен");
         epic.setId(id);
-        epicList.put(id++, epic);
+        epicList.put(id++, new Epic(epic));
     }
 
     public List<Task> getAllTask(){
@@ -138,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTask(int id){
         if (taskList.containsKey(id)){
             taskList.remove(id);
+            historyManager.remove(id);
             System.out.println("Задача " + id + " удалена");
         } else {
             System.out.println("Ключ " + id + " не найден");
@@ -148,6 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTaskList.containsKey(id)){
             SubTask subTask = subTaskList.get(id);
             subTaskList.remove(id);
+            historyManager.remove(id);
             Epic epic = epicList.get(subTask.getEpicId());
             epic.removeSubTask(subTask);
             epic.updateStatus();
@@ -162,9 +162,12 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epicList.get(id);
             ArrayList<SubTask> subTasks = new ArrayList<>(epic.getSubTaskList()); // клонирование списка
             for (SubTask subTask : subTasks) {
+                historyManager.remove(subTask.getId());
                 deleteSubTask(subTask.getId());
+
             }
             epicList.remove(id);
+            historyManager.remove(id);
             System.out.println("Эпик " + id + " удален");
 
         } else {
@@ -176,22 +179,31 @@ public class InMemoryTaskManager implements TaskManager {
         epicList.clear();
         taskList.clear();
         subTaskList.clear();
+        historyManager = Managers.getDefaultHistory();
         System.out.println("Все задачи удалены");
     }
 
     public void deleteAllTasks(){
-        taskList.clear();
+        ArrayList<Integer> taskIdList = new ArrayList<>(taskList.keySet());
+        for (Integer taskId : taskIdList){
+            deleteSubTask(taskId);
+        }
         System.out.println("Задачи удалены");
     }
 
     public void deleteAllEpic(){
-        epicList.clear();
-        subTaskList.clear();
+        ArrayList<Integer> epicIdList = new ArrayList<>(epicList.keySet());
+        for (Integer epicId : epicIdList){
+            deleteEpic(epicId);
+        }
         System.out.println("Эпики и их подзадачи удалены");
     }
 
     public void deleteAllSubTask(){
-        subTaskList.clear();
+        ArrayList<Integer> subTaskIdList = new ArrayList<>(subTaskList.keySet());
+        for (Integer subTaskId : subTaskIdList){
+            deleteSubTask(subTaskId);
+        }
         System.out.println("Подзадачи удалены");
     }
 

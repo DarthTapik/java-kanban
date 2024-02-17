@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,12 +28,22 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void checkThatMaxSizeOfHistoryIs10(){
-        for (int i = 0; i < 12; i++){
+    void checkThatDuplicatesNotSave(){
+        for (int i = 0; i < 3; i++){
             historyManager.add(task);
         }
         int size =  historyManager.getHistory().size();
-        assertEquals(10,size);
+        assertEquals(1,size);
+    }
+
+    @Test
+    void remove() {
+        historyManager.add(task);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size());
+        historyManager.remove(task.getId());
+        history = historyManager.getHistory();
+        assertEquals(0, history.size());
     }
 
 }
