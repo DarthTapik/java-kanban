@@ -7,17 +7,20 @@ public class Task {
     protected String description;
     protected int id;
     protected Status status;
+    protected TaskType type;
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        type = TaskType.TASK;
     }
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        type = TaskType.TASK;
     }
 
     public Task(Task task){
@@ -25,6 +28,15 @@ public class Task {
         this.description = task.description;
         this.status = task.status;
         this.id = task.id;
+        type = TaskType.TASK;
+    }
+
+    public Task(int id, String name, Status status, String description, TaskType type) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.type = type;
     }
 
     public String getName() {
@@ -57,6 +69,11 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+
+    public TaskType getType() {
+        return type;
     }
 
     @Override
