@@ -53,7 +53,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public List<Task> getAllTask() {
         return super.getAllTask();
-
     }
 
     @Override
@@ -69,7 +68,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public List<SubTask> getSubTasksByEpicId(int id) {
         return super.getSubTasksByEpicId(id);
-
     }
 
     @Override
@@ -214,67 +212,64 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() throws ManagerSaveException {
 
-        try  {
+        try {
             Writer out = new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8);
             List<Epic> epicList = getAllEpic();
             List<Task> taskList = getAllTask();
             List<SubTask> subTaskList = getAllSubTask();
             List<Task> history = getHistory();
             out.write("id,type,name,status,description,epic \n");
-            for (Epic epic : epicList){
+            for (Epic epic : epicList) {
                 out.write(CSVTaskFormatter.epicToString(epic) + "\n");
             }
 
-            for (Task task : taskList){
+            for (Task task : taskList) {
                 out.write(CSVTaskFormatter.taskToString(task) + "\n");
             }
 
-            for (SubTask subTask : subTaskList){
+            for (SubTask subTask : subTaskList) {
                 out.write(CSVTaskFormatter.subTaskToString(subTask) + "\n");
             }
             out.write(" \n");
 
-            for (Task task : history){
+            for (Task task : history) {
                 out.write(task.getId() + ",");
             }
 
             out.close();
-
-
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new ManagerSaveException(e);
-        } catch(IOException e){
+        } catch (IOException e) {
             throw new ManagerSaveException(e);
         }
     }
 
     public void loadFromFile(File file) throws ManagerLoadException {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(fileName), StandardCharsets.UTF_8));
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
             in.readLine();
             boolean stringTask = true;
-            while (in.ready()){
+            while (in.ready()) {
 
                 String line = in.readLine();
 
-                if (line.isBlank()){
+                if (line.isBlank()) {
                     stringTask = false;
                 }
 
-                if (stringTask){
+                if (stringTask) {
                     Task task = CSVTaskFormatter.stringToTask(line);
 
-                    if (task == null){
+                    if (task == null) {
                         return;
                     }
 
-                    if (task.getType().equals(TaskType.TASK)){
+                    if (task.getType().equals(TaskType.TASK)) {
                         super.forceAddTask(task);
-                    } else if (task.getType().equals(TaskType.EPIC)){
+                    } else if (task.getType().equals(TaskType.EPIC)) {
                         Epic epic = (Epic) task;
                         super.forceAddEpic(epic);
-                    } else if (task.getType().equals(TaskType.SUBTASK)){
+                    } else if (task.getType().equals(TaskType.SUBTASK)) {
                         super.forceAddSubTask((SubTask) task);
                     }
                 } else {
@@ -294,6 +289,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerLoadException(e);
         }
     }
-
-
 }

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileBackedTaskManagerTest {
     @Test
@@ -20,14 +21,14 @@ public class FileBackedTaskManagerTest {
         taskManager.deleteAll();
         try {
             taskManager.loadFromFile(testFile);
-        } catch (ManagerLoadException e){
+        } catch (ManagerLoadException e) {
             System.out.println("Ошибка чтения файла");
             throw new RuntimeException();
         }
 
-        assertEquals(0, taskManager.getAllTask().size());
-        assertEquals(0, taskManager.getAllSubTask().size());
-        assertEquals(0, taskManager.getAllEpic().size());
+        assertTrue(taskManager.getAllTask().isEmpty());
+        assertTrue(taskManager.getAllSubTask().isEmpty());
+        assertTrue(taskManager.getAllEpic().isEmpty());
     }
 
     @Test
