@@ -13,7 +13,6 @@ public class CSVTaskFormatter {
     public static String epicToString(Epic epic){
         return String.format("%d, %s, %s, %s, %s",
                 epic.getId(),"EPIC", epic.getName(), epic.getStatus().name(), epic.getDescription());
-
     }
 
     public static String subTaskToString(SubTask subTask){

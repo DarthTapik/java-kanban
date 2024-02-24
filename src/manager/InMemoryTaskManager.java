@@ -211,16 +211,18 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    protected void forceAddTask(Task task){
+    protected void forceAddTask(Task task){ // Метод для добавления задачи, без присвоения id самим менеджером
         taskList.put(task.getId(), task);
-        if (task.getId() > id)
-            id = task.getId() + 1;
+        if (task.getId() > id) { // Сравниваю id для того, чтобы избежать повторов и конфликтов при добавлении
+            id = task.getId() + 1; // из файла, а после через менеджер
+        }
     }
 
     protected void forceAddEpic(Epic epic){
         epicList.put(epic.getId(), epic);
-        if (epic.getId() > id)
-            id = epic.getId() +1 ;
+        if (epic.getId() > id) {
+            id = epic.getId() + 1;
+        }
     }
 
     protected void forceAddSubTask(SubTask subTask){
@@ -228,8 +230,9 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epicList.get(subTask.getEpicId());
             subTaskList.put(subTask.getId(), subTask);
             epic.addSubTask(subTask);
-            if (subTask.getId() > id)
+            if (subTask.getId() > id) {
                 id = subTask.getId() + 1;
+            }
         }
     }
 
