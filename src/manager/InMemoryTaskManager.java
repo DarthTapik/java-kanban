@@ -10,7 +10,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> taskList = new HashMap<>();
     private Map<Integer, SubTask> subTaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
     private int id = 0;
     public InMemoryTaskManager(){
         System.out.println("Менеджер задач инициализирован");
@@ -209,5 +209,44 @@ public class InMemoryTaskManager implements TaskManager {
 
     public List<Task> getHistory(){
         return historyManager.getHistory();
+    }
+
+    protected void forceAddTask(Task task){ // Метод для добавления задачи, без присвоения id самим менеджером
+        taskList.put(task.getId(), task);
+        if (task.getId() > id) { // Сравниваю id для того, чтобы избежать повторов и конфликтов при добавлении
+            id = task.getId() + 1; // из файла, а после через менеджер
+        }
+    }
+
+    protected void forceAddEpic(Epic epic){
+        epicList.put(epic.getId(), epic);
+        if (epic.getId() > id) {
+            id = epic.getId() + 1;
+        }
+    }
+
+    protected void forceAddSubTask(SubTask subTask){
+        if (epicList.containsKey(subTask.getEpicId())) {
+            Epic epic = epicList.get(subTask.getEpicId());
+            subTaskList.put(subTask.getId(), subTask);
+            epic.addSubTask(subTask);
+            if (subTask.getId() > id) {
+                id = subTask.getId() + 1;
+            }
+        }
+    }
+
+    protected Task findTask(int id){
+        Task task = null;
+
+        if (taskList.containsKey(id)) {
+            task = taskList.get(id);
+        } else if (subTaskList.containsKey(id)) {
+            task = subTaskList.get(id);
+        } else if (epicList.containsKey(id)) {
+            task = epicList.get(id);
+        }
+
+        return task;
     }
 }

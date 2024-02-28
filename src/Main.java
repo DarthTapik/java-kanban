@@ -1,11 +1,17 @@
+import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
+import manager.exceptions.ManagerLoadException;
+import manager.exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.io.File;
+
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         Task task1;
         Task task2;
         Epic epic1;
@@ -14,9 +20,9 @@ public class Main {
         SubTask subTask2;
         SubTask subTask3;
 
-        TaskManager manager = Managers.getDefault();
+            File file = new File("src/resources/task.csv");
 
-        System.out.println("Проверка истории простмотров задач");
+        TaskManager manager = Managers.getDefault();
         System.out.println("Инициализация задач");
         task1 = new Task("Задача 1", "Описание");
         manager.addTask(task1);
@@ -42,10 +48,14 @@ public class Main {
         manager.getSubTask(3);
         manager.getEpic(6);
         System.out.println(manager.getHistory());
-        manager.deleteTask(0);
-        System.out.println(manager.getHistory());
-        manager.deleteAllEpic();
-        System.out.println(manager.getHistory());
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+        try {
+            fileBackedTaskManager.loadFromFile(file);
+        } catch (ManagerLoadException e) {
+            System.out.println("Ошибка чтения файла");
+            throw new ManagerSaveException(e);
+        }
+        printAllTasks(fileBackedTaskManager);
 
     }
 
