@@ -110,6 +110,10 @@ public class Task {
         return  startTime.plus(duration);
     }
 
+    public boolean taskOverlap(Task task){
+        return this.getEndTime().isAfter(task.getStartTime()) && task.getEndTime().isAfter(this.getStartTime());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
