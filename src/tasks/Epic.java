@@ -8,13 +8,13 @@ public class Epic extends Task {
     ArrayList<SubTask> subTaskList;
     LocalDateTime endTime;
 
-    public Epic(String name, String description){
-        super(name,description, Duration.ofMillis(0), LocalDateTime.of(0,1,1,0,0));
+    public Epic(String name, String description) {
+        super(name, description, Duration.ofMillis(0), LocalDateTime.of(0, 1, 1, 0, 0));
         subTaskList = new ArrayList<>();
         super.type = TaskType.EPIC;
     }
 
-    public Epic(Epic epic){
+    public Epic(Epic epic) {
         super((Task) epic);
         this.subTaskList = epic.subTaskList;
         super.type = TaskType.EPIC;
@@ -26,15 +26,15 @@ public class Epic extends Task {
         subTaskList = new ArrayList<>();
     }
 
-    public boolean addSubTask(SubTask subTask){
-        return  subTaskList.add(subTask);
+    public boolean addSubTask(SubTask subTask) {
+        return subTaskList.add(subTask);
     }
 
-    public boolean removeSubTask(SubTask subTask){
-        return  subTaskList.remove(subTask);
+    public boolean removeSubTask(SubTask subTask) {
+        return subTaskList.remove(subTask);
     }
 
-    public ArrayList<SubTask> getSubTaskList(){
+    public ArrayList<SubTask> getSubTaskList() {
         return subTaskList;
     }
 
@@ -62,16 +62,16 @@ public class Epic extends Task {
                 status = Status.IN_PROGRESS;
             }
 
-            if (subTaskList.size() == 1){
+            if (subTaskList.size() == 1) {
                 this.setStartTime(subTask.getStartTime());
                 this.endTime = subTask.getEndTime();
             }
 
-            if (subTask.getStartTime().isBefore(this.getStartTime())){
+            if (subTask.getStartTime().isBefore(this.getStartTime())) {
                 this.setStartTime(subTask.getStartTime());
             }
 
-            if (subTask.getEndTime().isAfter(this.endTime)){
+            if (subTask.getEndTime().isAfter(this.endTime)) {
                 this.endTime = subTask.getEndTime();
             }
 

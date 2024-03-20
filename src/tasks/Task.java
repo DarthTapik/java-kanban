@@ -32,7 +32,7 @@ public class Task {
     }
 
 
-    public Task(Task task){
+    public Task(Task task) {
         this.name = task.name;
         this.description = task.description;
         this.status = task.status;
@@ -50,7 +50,7 @@ public class Task {
         this.status = status;
         this.type = type;
         this.duration = duration;
-        this. startTime = startTime;
+        this.startTime = startTime;
     }
 
     public String getName() {
@@ -106,11 +106,11 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime(){
-        return  startTime.plus(duration);
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
     }
 
-    public boolean taskOverlap(Task task){
+    public boolean taskOverlap(Task task) {
         return this.getEndTime().isAfter(task.getStartTime()) && task.getEndTime().isAfter(this.getStartTime());
     }
 

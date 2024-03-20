@@ -13,14 +13,15 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
     private Comparator<Task> taskComparator = new TaskByStartTimeComparator();
-    private Set <Task> sortedList = new TreeSet<>(taskComparator);
+    private Set<Task> sortedList = new TreeSet<>(taskComparator);
     protected HistoryManager historyManager = Managers.getDefaultHistory();
     private int id = 0;
-    public InMemoryTaskManager(){
+
+    public InMemoryTaskManager() {
         System.out.println("Менеджер задач инициализирован");
     }
 
-    public void addTask(Task task){
+    public void addTask(Task task) {
         if (validateTask(task)) {
             System.out.println("Задача " + id + " Добавлена");
             task.setId(id);
@@ -29,7 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void addSubTask(SubTask subTask){
+    public void addSubTask(SubTask subTask) {
         if (validateTask(subTask)) {
             subTask.setId(id);
             if (epicList.containsKey(subTask.getEpicId())) {
@@ -46,131 +47,131 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void addEpic(Epic epic){
+    public void addEpic(Epic epic) {
         System.out.println("Эпик " + id + " Добавлен");
         epic.setId(id);
         epicList.put(id++, new Epic(epic));
-        if (epic.getStartTime().isAfter(LocalDateTime.of(1970,1,1,0,0))){
+        if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
             sortedList.add(new Epic(epic));
         }
     }
 
-    public List<Task> getAllTask(){
+    public List<Task> getAllTask() {
         return new ArrayList<>(taskList.values());
     }
 
-    public List<SubTask> getAllSubTask(){
+    public List<SubTask> getAllSubTask() {
         return new ArrayList<>(subTaskList.values());
     }
 
-    public List<Epic> getAllEpic(){
+    public List<Epic> getAllEpic() {
         return new ArrayList<>(epicList.values());
     }
 
 
-    public List<SubTask> getSubTasksByEpicId(int id){
-        if (epicList.containsKey(id)){
+    public List<SubTask> getSubTasksByEpicId(int id) {
+        if (epicList.containsKey(id)) {
             return epicList.get(id).getSubTaskList();
         }
         System.out.println("Ключ " + id + " не найден");
         return null;
     }
 
-    public Task getTask(int id){
-        if (taskList.containsKey(id)){
+    public Task getTask(int id) {
+        if (taskList.containsKey(id)) {
             Task task = taskList.get(id);
             historyManager.add(task);
             return task;
-        } else{
+        } else {
             System.out.println("Задача не найдена");
             return null;
         }
     }
 
-    public SubTask getSubTask(int id){
-        if (subTaskList.containsKey(id)){
+    public SubTask getSubTask(int id) {
+        if (subTaskList.containsKey(id)) {
             SubTask subTask = subTaskList.get(id);
             historyManager.add(subTask);
             return subTask;
-        } else{
+        } else {
             System.out.println("Подзадача не найдена");
             return null;
         }
     }
 
-    public Epic getEpic(int id){
-        if (epicList.containsKey(id)){
+    public Epic getEpic(int id) {
+        if (epicList.containsKey(id)) {
             Epic epic = epicList.get(id);
             historyManager.add(epic);
             return epic;
-        } else{
+        } else {
             System.out.println("Эпик не найден");
             return null;
         }
     }
 
-    public void updateTask(Task task){
+    public void updateTask(Task task) {
 
-            if (taskList.containsKey(task.getId())) {
-                sortedList.remove(taskList.get(task.getId()));
-                if (validateTask(task)) {
-                    taskList.put(task.getId(), task);
-                    sortedList.add(task);
-                    System.out.println("Задача " + task.getId() + " Обновлена");
-                } else {
-                    sortedList.add(taskList.get(task.getId()));
-                }
+        if (taskList.containsKey(task.getId())) {
+            sortedList.remove(taskList.get(task.getId()));
+            if (validateTask(task)) {
+                taskList.put(task.getId(), task);
+                sortedList.add(task);
+                System.out.println("Задача " + task.getId() + " Обновлена");
             } else {
-                System.out.println("Ключ не найден");
+                sortedList.add(taskList.get(task.getId()));
             }
-
-    }
-
-    public void updateSubTask(SubTask subTask){
-
-            if (subTaskList.containsKey(subTask.getId())) {
-                sortedList.remove(getSubTask(subTask.getId()));
-                if (validateTask(subTask)) {
-                    if (epicList.containsKey(subTask.getEpicId())) {
-                        Epic epic = epicList.get(subTask.getEpicId());
-                        epic.removeSubTask(getSubTask(subTask.getId())); // Удаление для избежания повторений в списке
-                        subTaskList.put(subTask.getId(), subTask);
-                        epic.addSubTask(subTask);
-                        epic.updateStatusAndTime();
-                        sortedList.add(subTask);
-                        System.out.println("Подзадача " + subTask.getId() + " Обновлена");
-                    } else {
-                        System.out.println("Отстутствует эпик заданный в подзадаче");
-                    }
-                } else {
-                    sortedList.add(getSubTask(subTask.getId()));
-                }
-            } else {
-                System.out.println("Ключ не найден");
-            }
+        } else {
+            System.out.println("Ключ не найден");
         }
 
+    }
 
-    public void updateEpic(Epic epic){
+    public void updateSubTask(SubTask subTask) {
 
-            if (epicList.containsKey(epic.getId())) {
-                sortedList.remove(getEpic(epic.getId()));
-                if (validateTask(epic)) {
-                    epicList.put(epic.getId(), epic);
-                    if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
-                        sortedList.add(new Epic(epic));
-                    }
+        if (subTaskList.containsKey(subTask.getId())) {
+            sortedList.remove(getSubTask(subTask.getId()));
+            if (validateTask(subTask)) {
+                if (epicList.containsKey(subTask.getEpicId())) {
+                    Epic epic = epicList.get(subTask.getEpicId());
+                    epic.removeSubTask(getSubTask(subTask.getId())); // Удаление для избежания повторений в списке
+                    subTaskList.put(subTask.getId(), subTask);
+                    epic.addSubTask(subTask);
+                    epic.updateStatusAndTime();
+                    sortedList.add(subTask);
+                    System.out.println("Подзадача " + subTask.getId() + " Обновлена");
                 } else {
-                    sortedList.add(getEpic(epic.getId()));
+                    System.out.println("Отстутствует эпик заданный в подзадаче");
                 }
             } else {
-                System.out.println("Ключ не найден");
+                sortedList.add(getSubTask(subTask.getId()));
             }
+        } else {
+            System.out.println("Ключ не найден");
+        }
+    }
+
+
+    public void updateEpic(Epic epic) {
+
+        if (epicList.containsKey(epic.getId())) {
+            sortedList.remove(getEpic(epic.getId()));
+            if (validateTask(epic)) {
+                epicList.put(epic.getId(), epic);
+                if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
+                    sortedList.add(new Epic(epic));
+                }
+            } else {
+                sortedList.add(getEpic(epic.getId()));
+            }
+        } else {
+            System.out.println("Ключ не найден");
+        }
 
     }
 
-    public void deleteTask(int id){
-        if (taskList.containsKey(id)){
+    public void deleteTask(int id) {
+        if (taskList.containsKey(id)) {
             sortedList.remove(taskList.get(id));
             taskList.remove(id);
             historyManager.remove(id);
@@ -181,8 +182,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void deleteSubTask(int id){
-        if (subTaskList.containsKey(id)){
+    public void deleteSubTask(int id) {
+        if (subTaskList.containsKey(id)) {
             SubTask subTask = subTaskList.get(id);
             sortedList.remove(subTask);
             subTaskList.remove(id);
@@ -203,10 +204,10 @@ public class InMemoryTaskManager implements TaskManager {
             subTaskList.values().stream()
                     .filter(subTask -> subTask.getEpicId() == epic.getId())
                     .forEach(subTask -> {
-                        sortedList.remove(subTask);
-                        historyManager.remove(subTask.getId());
-                        deleteSubTask(subTask.getId());
-                    }
+                                sortedList.remove(subTask);
+                                historyManager.remove(subTask.getId());
+                                deleteSubTask(subTask.getId());
+                            }
                     );
             epicList.remove(id);
             historyManager.remove(id);
@@ -217,7 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         epicList.clear();
         taskList.clear();
         subTaskList.clear();
@@ -226,42 +227,41 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("Все задачи удалены");
     }
 
-    public void deleteAllTasks(){
+    public void deleteAllTasks() {
         taskList.values().stream()
                 .forEach(task -> deleteTask(task.getId()));
         System.out.println("Задачи удалены");
     }
 
-    public void deleteAllEpic(){
+    public void deleteAllEpic() {
 
         epicList.values().stream()
-                .forEach(epic ->deleteEpic(epic.getId()));
+                .forEach(epic -> deleteEpic(epic.getId()));
 
         System.out.println("Эпики и их подзадачи удалены");
     }
 
-    public void deleteAllSubTask(){
+    public void deleteAllSubTask() {
         subTaskList.values().stream()
                 .forEach(subTask -> deleteSubTask(subTask.getId()));
         System.out.println("Подзадачи удалены");
     }
 
-    public List<Task> getHistory(){
+    public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 
-    public List<Task> getPrioritizedTasks(){
+    public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(sortedList);
     }
 
 
-
-    public boolean validateTask(Task task){
-      return !(sortedList.stream()
+    public boolean validateTask(Task task) {
+        return !(sortedList.stream()
                 .anyMatch(anyTask -> anyTask.taskOverlap(task)));
     }
 
-    protected void forceAddTask(Task task){ // Метод для добавления задачи, без присвоения id самим менеджером
+    protected void forceAddTask(Task task) { // Метод для добавления задачи, без присвоения id самим менеджером
         taskList.put(task.getId(), task);
         sortedList.add(task);
         if (task.getId() > id) { // Сравниваю id для того, чтобы избежать повторов и конфликтов при добавлении
@@ -269,9 +269,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected void forceAddEpic(Epic epic){
+    protected void forceAddEpic(Epic epic) {
         epicList.put(epic.getId(), epic);
-        if (epic.getStartTime().isAfter(LocalDateTime.of(1970,1,1,0,0))){
+        if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
             sortedList.add(new Epic(epic));
         }
         if (epic.getId() > id) {
@@ -279,7 +279,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected void forceAddSubTask(SubTask subTask){
+    protected void forceAddSubTask(SubTask subTask) {
         if (epicList.containsKey(subTask.getEpicId())) {
             Epic epic = epicList.get(subTask.getEpicId());
             subTaskList.put(subTask.getId(), subTask);
@@ -291,7 +291,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected Task findTask(int id){
+    protected Task findTask(int id) {
         Task task = null;
 
         if (taskList.containsKey(id)) {
