@@ -1,19 +1,16 @@
 import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
-import manager.exceptions.ManagerLoadException;
-import manager.exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
-import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 
 public class Main {
-    public static void main(String[] args) throws ManagerSaveException {
+    public static void main(String[] args) {
         Task task1;
         Task task2;
         Epic epic1;
@@ -22,8 +19,6 @@ public class Main {
         SubTask subTask2;
         SubTask subTask3;
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6, 0);
-
-            File file = new File("src/resources/task.csv");
 
         TaskManager manager = Managers.getDefault();
         System.out.println("Инициализация задач");
@@ -41,7 +36,6 @@ public class Main {
         subTask2 = new SubTask("Подзадача 2", "Описание", 1, Duration.ofMinutes(15), dateTime);
         dateTime = dateTime.plusMinutes(16);
         subTask3 = new SubTask("Подзадача 3", "Описание", 1, Duration.ofMinutes(15), dateTime);
-        dateTime = dateTime.plusMinutes(16);
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
         manager.addSubTask(subTask3);

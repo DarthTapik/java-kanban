@@ -3,6 +3,7 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     ArrayList<SubTask> subTaskList;
@@ -34,7 +35,7 @@ public class Epic extends Task {
         return subTaskList.remove(subTask);
     }
 
-    public ArrayList<SubTask> getSubTaskList() {
+    public List<SubTask> getSubTaskList() {
         return subTaskList;
     }
 

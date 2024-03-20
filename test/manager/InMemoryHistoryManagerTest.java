@@ -63,7 +63,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.remove(task3.getId());
         assertEquals(2, historyManager.getHistory().size());
-        ArrayList<Task> expectedHistory = new ArrayList<>();
+        List<Task> expectedHistory = new ArrayList<>();
         expectedHistory.add(task2);
         expectedHistory.add(task);
 
@@ -77,7 +77,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.remove(task.getId());
         assertEquals(2, historyManager.getHistory().size());
-        ArrayList<Task> expectedHistory = new ArrayList<>();
+        List<Task> expectedHistory = new ArrayList<>();
         expectedHistory.add(task3);
         expectedHistory.add(task2);
         assertEquals(expectedHistory, historyManager.getHistory());
@@ -90,7 +90,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.remove(task2.getId());
         assertEquals(2, historyManager.getHistory().size());
-        ArrayList<Task> expectedHistory = new ArrayList<>();
+        List<Task> expectedHistory = new ArrayList<>();
         expectedHistory.add(task3);
         expectedHistory.add(task);
         assertEquals(expectedHistory, historyManager.getHistory());
@@ -98,6 +98,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void emptyHistory() {
-        assertEquals(new ArrayList<>(), historyManager.getHistory());
+        assertTrue(historyManager.getHistory().isEmpty());
     }
 }
