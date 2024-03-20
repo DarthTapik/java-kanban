@@ -22,12 +22,13 @@ class InMemoryTaskManagerTest {
     LocalDateTime dateTime;
 
     @BeforeEach
-    void BeforeEach(){
+    void BeforeEach() {
         taskManager = new InMemoryTaskManager();
-        dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6,0);
+        dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6, 0);
     }
+
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         taskManager.deleteAll();
     }
 
@@ -35,7 +36,7 @@ class InMemoryTaskManagerTest {
     void addNewSubTask() {
         Epic epic = new Epic("0", "0");
         taskManager.addEpic(epic);
-        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description", 0, Duration.ofMinutes(15),dateTime);
+        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description", 0, Duration.ofMinutes(15), dateTime);
         taskManager.addSubTask(subTask);
         final int subTaskId = subTask.getId();
 
@@ -90,12 +91,12 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void tryAddSubTaskToSubTask(){
+    void tryAddSubTaskToSubTask() {
         Epic epic = new Epic("Test epic", "Test epic description");
         SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc",
                 0, Duration.ofMinutes(15), dateTime);
         SubTask subTask2 = new SubTask("Second test subTask", "Second test subTask desc",
-                1, Duration.ofMinutes(15),dateTime);
+                1, Duration.ofMinutes(15), dateTime);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTask1);
         taskManager.addSubTask(subTask2);
@@ -105,8 +106,8 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkThatTaskUpdates(){
-        Task task = new Task("Before update","Before update desc", Duration.ofMinutes(15), dateTime);
+    void checkThatTaskUpdates() {
+        Task task = new Task("Before update", "Before update desc", Duration.ofMinutes(15), dateTime);
         taskManager.addTask(task);
         task.setDescription("After update desc");
         task.setName("After update");
@@ -116,13 +117,16 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkThatStatusOfEpicUpdates(){
+    void checkThatStatusOfEpicUpdates() {
         Epic epic = new Epic("Epic", "Epic description");
         taskManager.addEpic(epic);
-        assertEquals(Status.NEW ,epic.getStatus());
+        assertEquals(Status.NEW, epic.getStatus());
         SubTask subTask = new SubTask("SubTask", "Subtask description",
-                Status.IN_PROGRESS, 0, Duration.ofMinutes(15), dateTime);
+                Status.NEW, 0, Duration.ofMinutes(15), dateTime);
         taskManager.addSubTask(subTask);
+        assertEquals(Status.NEW, epic.getStatus());
+        subTask.setStatus(Status.IN_PROGRESS);
+        taskManager.updateSubTask(subTask);
         assertEquals(Status.IN_PROGRESS, taskManager.getEpic(0).getStatus());
         subTask.setStatus(Status.DONE);
         taskManager.updateSubTask(subTask);
@@ -130,7 +134,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkThatDeletedSubTaskNotSaveInEpic(){
+    void checkThatDeletedSubTaskNotSaveInEpic() {
         Epic epic = new Epic("Test epic", "Test epic description");
         SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc",
                 0, Duration.ofMinutes(15), dateTime);
@@ -148,7 +152,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void checkThatSetterNotChangeTaskInManager(){
+    void checkThatSetterNotChangeTaskInManager() {
         Task task = new Task("Название 1", "Описание 1", Duration.ofMinutes(15), dateTime);
         taskManager.addTask(task);
         assertEquals("Название 1", taskManager.getTask(0).getName());
