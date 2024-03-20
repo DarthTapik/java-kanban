@@ -189,13 +189,14 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicList.containsKey(id)) {
             Epic epic = epicList.get(id);
             sortedList.remove(epic);
-            ArrayList<SubTask> subTasks = new ArrayList<>(epic.getSubTaskList()); // клонирование списка
-            for (SubTask subTask : subTasks) {
-                sortedList.remove(subTask);
-                historyManager.remove(subTask.getId());
-                deleteSubTask(subTask.getId());
-
-            }
+            subTaskList.values().stream()
+                    .filter(subTask -> subTask.getEpicId() == epic.getId())
+                    .forEach(subTask -> {
+                        sortedList.remove(subTask);
+                        historyManager.remove(subTask.getId());
+                        deleteSubTask(subTask.getId());
+                    }
+                    );
             epicList.remove(id);
             historyManager.remove(id);
             System.out.println("Эпик " + id + " удален");
@@ -215,26 +216,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void deleteAllTasks(){
-        ArrayList<Integer> taskIdList = new ArrayList<>(taskList.keySet());
-        for (Integer taskId : taskIdList){
-            deleteTask(taskId);
-        }
+        taskList.values().stream()
+                .forEach(task -> deleteTask(task.getId()));
         System.out.println("Задачи удалены");
     }
 
     public void deleteAllEpic(){
-        ArrayList<Integer> epicIdList = new ArrayList<>(epicList.keySet());
-        for (Integer epicId : epicIdList){
-            deleteEpic(epicId);
-        }
+
+        epicList.values().stream()
+                .forEach(epic ->deleteEpic(epic.getId()));
+
         System.out.println("Эпики и их подзадачи удалены");
     }
 
     public void deleteAllSubTask(){
-        ArrayList<Integer> subTaskIdList = new ArrayList<>(subTaskList.keySet());
-        for (Integer subTaskId : subTaskIdList){
-            deleteSubTask(subTaskId);
-        }
+        subTaskList.values().stream()
+                .forEach(subTask -> deleteSubTask(subTask.getId()));
         System.out.println("Подзадачи удалены");
     }
 
