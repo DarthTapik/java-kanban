@@ -6,6 +6,9 @@ import tasks.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,9 +38,10 @@ public class FileBackedTaskManagerTest {
     public void testSaveAndLoadMultipleTasks() throws IOException {
         File testFile = File.createTempFile("test", ".csv");
         FileBackedTaskManager taskManager = new FileBackedTaskManager(testFile);
-
-        Task task1 = new Task("Task 1", "Description 1");
-        Task task2 = new Task("Task 2", "Description 2");
+        LocalDateTime dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6,0);
+        Task task1 = new Task("Task 1", "Description 1", Duration.ofMinutes(15), dateTime);
+        dateTime = dateTime.plusMinutes(16);
+        Task task2 = new Task("Task 2", "Description 2", Duration.ofMinutes(15), dateTime);
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);

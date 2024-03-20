@@ -110,52 +110,63 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void updateTask(Task task){
-        if (validateTask(task)) {
+
             if (taskList.containsKey(task.getId())) {
                 sortedList.remove(taskList.get(task.getId()));
-                taskList.put(task.getId(), task);
-                sortedList.add(task);
-
-                System.out.println("Задача " + task.getId() + " Обновлена");
+                if (validateTask(task)) {
+                    taskList.put(task.getId(), task);
+                    sortedList.add(task);
+                    System.out.println("Задача " + task.getId() + " Обновлена");
+                } else {
+                    sortedList.add(taskList.get(task.getId()));
+                }
             } else {
                 System.out.println("Ключ не найден");
             }
-        }
+
     }
 
     public void updateSubTask(SubTask subTask){
-        if (validateTask(subTask)) {
+
             if (subTaskList.containsKey(subTask.getId())) {
-                if (epicList.containsKey(subTask.getEpicId())) {
-                    Epic epic = epicList.get(subTask.getEpicId());
-                    epic.removeSubTask(getSubTask(subTask.getId())); // Удаление для избежания повторений в списке
-                    sortedList.remove(getSubTask(subTask.getId()));
-                    subTaskList.put(subTask.getId(), subTask);
-                    epic.addSubTask(subTask);
-                    epic.updateStatusAndTime();
-                    sortedList.add(subTask);
-                    System.out.println("Подзадача " + subTask.getId() + " Обновлена");
+                sortedList.remove(getSubTask(subTask.getId()));
+                if (validateTask(subTask)) {
+                    if (epicList.containsKey(subTask.getEpicId())) {
+                        Epic epic = epicList.get(subTask.getEpicId());
+                        epic.removeSubTask(getSubTask(subTask.getId())); // Удаление для избежания повторений в списке
+                        subTaskList.put(subTask.getId(), subTask);
+                        epic.addSubTask(subTask);
+                        epic.updateStatusAndTime();
+                        sortedList.add(subTask);
+                        System.out.println("Подзадача " + subTask.getId() + " Обновлена");
+                    } else {
+                        System.out.println("Отстутствует эпик заданный в подзадаче");
+                    }
                 } else {
-                    System.out.println("Отстутствует эпик заданный в подзадаче");
+                    sortedList.add(getSubTask(subTask.getId()));
                 }
             } else {
                 System.out.println("Ключ не найден");
             }
         }
-    }
+
 
     public void updateEpic(Epic epic){
-        if (validateTask(epic)) {
+
             if (epicList.containsKey(epic.getId())) {
-                epicList.put(epic.getId(), epic);
                 sortedList.remove(getEpic(epic.getId()));
-                if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
-                    sortedList.add(new Epic(epic));
+                if (validateTask(epic)) {
+                    epicList.put(epic.getId(), epic);
+                    if (epic.getStartTime().isAfter(LocalDateTime.of(1970, 1, 1, 0, 0))) {
+                        sortedList.add(new Epic(epic));
+                    }
+                } else {
+                    sortedList.add(getEpic(epic.getId()));
                 }
             } else {
                 System.out.println("Ключ не найден");
             }
-        }
+
     }
 
     public void deleteTask(int id){

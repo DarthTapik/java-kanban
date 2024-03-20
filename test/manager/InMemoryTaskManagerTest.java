@@ -9,6 +9,9 @@ import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
     InMemoryTaskManager taskManager;
+    LocalDateTime dateTime;
 
     @BeforeEach
     void BeforeEach(){
         taskManager = new InMemoryTaskManager();
+        dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6,0);
     }
     @AfterEach
     void afterEach(){
@@ -30,7 +35,7 @@ class InMemoryTaskManagerTest {
     void addNewSubTask() {
         Epic epic = new Epic("0", "0");
         taskManager.addEpic(epic);
-        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description", 0);
+        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description", 0, Duration.ofMinutes(15),dateTime);
         taskManager.addSubTask(subTask);
         final int subTaskId = subTask.getId();
 
@@ -48,7 +53,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void addNewTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW);
+        Task task = new Task("Test addNewTask", "Test addNewTask description",
+                Status.NEW, Duration.ofMinutes(15), dateTime);
         taskManager.addTask(task);
         final int taskId = task.getId();
 
@@ -86,8 +92,10 @@ class InMemoryTaskManagerTest {
     @Test
     void tryAddSubTaskToSubTask(){
         Epic epic = new Epic("Test epic", "Test epic description");
-        SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc", 0);
-        SubTask subTask2 = new SubTask("Second test subTask", "Second test subTask desc", 1);
+        SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc",
+                0, Duration.ofMinutes(15), dateTime);
+        SubTask subTask2 = new SubTask("Second test subTask", "Second test subTask desc",
+                1, Duration.ofMinutes(15),dateTime);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTask1);
         taskManager.addSubTask(subTask2);
@@ -98,7 +106,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void checkThatTaskUpdates(){
-        Task task = new Task("Before update","Before update desc");
+        Task task = new Task("Before update","Before update desc", Duration.ofMinutes(15), dateTime);
         taskManager.addTask(task);
         task.setDescription("After update desc");
         task.setName("After update");
@@ -112,7 +120,8 @@ class InMemoryTaskManagerTest {
         Epic epic = new Epic("Epic", "Epic description");
         taskManager.addEpic(epic);
         assertEquals(Status.NEW ,epic.getStatus());
-        SubTask subTask = new SubTask("SubTask", "Subtask description", Status.IN_PROGRESS, 0);
+        SubTask subTask = new SubTask("SubTask", "Subtask description",
+                Status.IN_PROGRESS, 0, Duration.ofMinutes(15), dateTime);
         taskManager.addSubTask(subTask);
         assertEquals(Status.IN_PROGRESS, taskManager.getEpic(0).getStatus());
         subTask.setStatus(Status.DONE);
@@ -123,7 +132,8 @@ class InMemoryTaskManagerTest {
     @Test
     void checkThatDeletedSubTaskNotSaveInEpic(){
         Epic epic = new Epic("Test epic", "Test epic description");
-        SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc", 0);
+        SubTask subTask1 = new SubTask("First test subTask", "First test subTask desc",
+                0, Duration.ofMinutes(15), dateTime);
 
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTask1);
@@ -139,7 +149,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void checkThatSetterNotChangeTaskInManager(){
-        Task task = new Task("Название 1", "Описание 1");
+        Task task = new Task("Название 1", "Описание 1", Duration.ofMinutes(15), dateTime);
         taskManager.addTask(task);
         assertEquals("Название 1", taskManager.getTask(0).getName());
 

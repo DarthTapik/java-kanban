@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,8 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     void BeforeEach(){
         historyManager = new InMemoryHistoryManager();
-        task = new Task("Название 1", "Описание 1");
+        LocalDateTime dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6,0);
+        task = new Task("Название 1", "Описание 1", Duration.ofMinutes(15), dateTime);
     }
 
     @Test
