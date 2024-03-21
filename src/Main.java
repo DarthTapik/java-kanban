@@ -1,17 +1,16 @@
 import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
-import manager.exceptions.ManagerLoadException;
-import manager.exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
-import java.io.File;
-
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 public class Main {
-    public static void main(String[] args) throws ManagerSaveException {
+    public static void main(String[] args) {
         Task task1;
         Task task2;
         Epic epic1;
@@ -19,20 +18,24 @@ public class Main {
         SubTask subTask1;
         SubTask subTask2;
         SubTask subTask3;
-
-            File file = new File("src/resources/task.csv");
+        LocalDateTime dateTime = LocalDateTime.of(2024, Month.MARCH, 12, 6, 0);
 
         TaskManager manager = Managers.getDefault();
         System.out.println("Инициализация задач");
-        task1 = new Task("Задача 1", "Описание");
+        task1 = new Task("Задача 1", "Описание", Duration.ofMinutes(15), dateTime);
         manager.addTask(task1);
-        task2 = new Task("Задача 2", "Описание");
-        manager.addTask(task2);
+
+        task2 = new Task("Задача 2", "Описание", Duration.ofMinutes(15), dateTime);
+        manager.addTask(task2); // Задача не добавится
+        dateTime = dateTime.plusMinutes(16);
         epic1 = new Epic("Эпик с подзадачами","Описание");
         manager.addEpic(epic1);
-        subTask1 = new SubTask("Подзадача 1", "Описание", 2);
-        subTask2 = new SubTask("Подзадача 2", "Описание", 2);
-        subTask3 = new SubTask("Подзадача 3", "Описание", 2);
+
+        subTask1 = new SubTask("Подзадача 1", "Описание", 1, Duration.ofMinutes(15), dateTime);
+        dateTime = dateTime.plusMinutes(16);
+        subTask2 = new SubTask("Подзадача 2", "Описание", 1, Duration.ofMinutes(15), dateTime);
+        dateTime = dateTime.plusMinutes(16);
+        subTask3 = new SubTask("Подзадача 3", "Описание", 1, Duration.ofMinutes(15), dateTime);
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
         manager.addSubTask(subTask3);
@@ -40,22 +43,11 @@ public class Main {
         manager.addEpic(epic2);
         printAllTasks(manager);
 
-        manager.getTask(0);
-        manager.getTask(0);
-        manager.getEpic(2);
-        manager.getTask(1);
-        manager.getSubTask(4);
-        manager.getSubTask(3);
-        manager.getEpic(6);
-        System.out.println(manager.getHistory());
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-        try {
-            fileBackedTaskManager.loadFromFile(file);
-        } catch (ManagerLoadException e) {
-            System.out.println("Ошибка чтения файла");
-            throw new ManagerSaveException(e);
-        }
-        printAllTasks(fileBackedTaskManager);
+        FileBackedTaskManager fileBackedTaskManager = (FileBackedTaskManager) manager;
+
+        System.out.println(fileBackedTaskManager.getPrioritizedTasks());
+        System.out.println("EndTime of epic1: " + fileBackedTaskManager.getEpic(epic1.getId()).getEndTime());
+        System.out.println("EndTime of lastSubTask" + fileBackedTaskManager.getSubTask(subTask3.getId()).getEndTime());
 
     }
 
