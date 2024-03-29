@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class EpicsHandler extends Handler {
 
-    enum EpicEndpoint{
+    enum EpicEndpoint {
         GET_EPICS,
         GET_EPIC_BY_ID,
         POST_EPIC,
@@ -22,7 +22,7 @@ public class EpicsHandler extends Handler {
     private final TaskManager manager;
     private final Gson gson;
 
-    public EpicsHandler(TaskManager manager, Gson gson){
+    public EpicsHandler(TaskManager manager, Gson gson) {
         this.manager = manager;
         this.gson = gson;
     }
@@ -32,7 +32,7 @@ public class EpicsHandler extends Handler {
         EpicEndpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
         System.out.println(endpoint);
 
-        switch (endpoint){
+        switch (endpoint) {
             case GET_EPICS:
                 handleGetEpics(exchange);
                 break;
@@ -49,13 +49,13 @@ public class EpicsHandler extends Handler {
                 handleGetEpicsSubtasks(exchange);
                 break;
             default:
-                writeResponse(exchange,notFound, 404);
+                writeResponse(exchange, notFound, 404);
         }
 
 
     }
 
-    private EpicEndpoint getEndpoint(String requestPath, String requestMethod){
+    private EpicEndpoint getEndpoint(String requestPath, String requestMethod) {
         String[] path = requestPath.split("/");
         switch (requestMethod) {
             case "GET":
@@ -86,31 +86,31 @@ public class EpicsHandler extends Handler {
         writeResponse(exchange, gson.toJson(epicList), 200);
     }
 
-    private void handleGetEpicById(HttpExchange exchange) throws IOException{
+    private void handleGetEpicById(HttpExchange exchange) throws IOException {
         Optional<Integer> optionalEpicId = getEpicId(exchange);
-        if (optionalEpicId.isEmpty()){
+        if (optionalEpicId.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         int epicId = optionalEpicId.get();
-        if (manager.getEpic(epicId) == null){
-            writeResponse(exchange,notFound, 404);
+        if (manager.getEpic(epicId) == null) {
+            writeResponse(exchange, notFound, 404);
             return;
         }
         Epic epic = manager.getEpic(epicId);
         writeResponse(exchange, gson.toJson(epic), 200);
     }
 
-    private void handlePostEpic(HttpExchange exchange) throws  IOException{
+    private void handlePostEpic(HttpExchange exchange) throws IOException {
         Optional<Epic> optionalEpic = parseEpic(exchange);
-        if (optionalEpic.isEmpty()){
+        if (optionalEpic.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         Epic epic = optionalEpic.get();
         int epicId = epic.getId();
-        if (epicId > 0){
-            if (manager.getAllEpic().contains(manager.getEpic(epicId))){
+        if (epicId > 0) {
+            if (manager.getAllEpic().contains(manager.getEpic(epicId))) {
                 manager.updateEpic(epic);
                 writeResponse(exchange, "", 201);
             } else {
@@ -119,8 +119,8 @@ public class EpicsHandler extends Handler {
 
         } else {
             manager.addEpic(epic);
-            if (!manager.getAllEpic().contains(epic)){
-                writeResponse(exchange,notAcceptable, 406);
+            if (!manager.getAllEpic().contains(epic)) {
+                writeResponse(exchange, notAcceptable, 406);
                 return;
             }
             writeResponse(exchange, "", 201);
@@ -129,31 +129,31 @@ public class EpicsHandler extends Handler {
 
     private void handleDeleteEpic(HttpExchange exchange) throws IOException {
         Optional<Integer> optionalEpicId = getEpicId(exchange);
-        if (optionalEpicId.isEmpty()){
+        if (optionalEpicId.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         int epicId = optionalEpicId.get();
-        if (manager.getEpic(epicId) == null){
-            writeResponse(exchange,notFound, 404);
+        if (manager.getEpic(epicId) == null) {
+            writeResponse(exchange, notFound, 404);
             return;
         }
 
         manager.deleteEpic(epicId);
-        if (manager.getEpic(epicId) == null){
+        if (manager.getEpic(epicId) == null) {
             writeResponse(exchange, "", 200);
         }
     }
 
     private void handleGetEpicsSubtasks(HttpExchange exchange) throws IOException {
         Optional<Integer> optionalEpicId = getEpicId(exchange);
-        if (optionalEpicId.isEmpty()){
+        if (optionalEpicId.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         int epicId = optionalEpicId.get();
-        if (manager.getEpic(epicId) == null){
-            writeResponse(exchange,notFound, 404);
+        if (manager.getEpic(epicId) == null) {
+            writeResponse(exchange, notFound, 404);
             return;
         }
         Epic epic = manager.getEpic(epicId);
@@ -172,15 +172,13 @@ public class EpicsHandler extends Handler {
     private Optional<Epic> parseEpic(HttpExchange exchange) throws IOException {
         String body = new String(exchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
         JsonElement jsonElement = JsonParser.parseString(body);
-        if (jsonElement.isJsonObject()){
+        if (jsonElement.isJsonObject()) {
             Epic epic = gson.fromJson(jsonElement, Epic.class);
             return Optional.of(epic);
         } else {
             return Optional.empty();
         }
     }
-
-
 
 
 }

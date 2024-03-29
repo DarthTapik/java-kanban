@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class SubTasksHandler extends Handler {
 
-    enum SubTaskEndpoint{
+    enum SubTaskEndpoint {
         GET_SUBTASKS,
         GET_SUBTASK_BY_ID,
         POST_SUBTASK,
@@ -23,7 +23,7 @@ public class SubTasksHandler extends Handler {
     private final TaskManager manager;
     private final Gson gson;
 
-    public SubTasksHandler(TaskManager manager, Gson gson){
+    public SubTasksHandler(TaskManager manager, Gson gson) {
         this.manager = manager;
         this.gson = gson;
     }
@@ -33,7 +33,7 @@ public class SubTasksHandler extends Handler {
         SubTaskEndpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
         System.out.println(endpoint);
 
-        switch (endpoint){
+        switch (endpoint) {
             case GET_SUBTASKS:
                 handleGetSubTasks(exchange);
                 break;
@@ -47,13 +47,13 @@ public class SubTasksHandler extends Handler {
                 handleDeleteSubTask(exchange);
                 break;
             default:
-                writeResponse(exchange,notFound, 404);
+                writeResponse(exchange, notFound, 404);
         }
 
 
     }
 
-    private SubTaskEndpoint getEndpoint(String requestPath, String requestMethod){
+    private SubTaskEndpoint getEndpoint(String requestPath, String requestMethod) {
         String[] path = requestPath.split("/");
         switch (requestMethod) {
             case "GET":
@@ -81,14 +81,14 @@ public class SubTasksHandler extends Handler {
         writeResponse(exchange, gson.toJson(subTaskList), 200);
     }
 
-    private void handleGetSubTaskById(HttpExchange exchange) throws IOException{
+    private void handleGetSubTaskById(HttpExchange exchange) throws IOException {
         Optional<Integer> optionalSubTaskId = getSubTaskId(exchange);
-        if (optionalSubTaskId.isEmpty()){
+        if (optionalSubTaskId.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         int subTaskId = optionalSubTaskId.get();
-        if (manager.getSubTask(subTaskId) == null){
+        if (manager.getSubTask(subTaskId) == null) {
             writeResponse(exchange, notFound, 404);
             return;
         }
@@ -96,16 +96,16 @@ public class SubTasksHandler extends Handler {
         writeResponse(exchange, gson.toJson(task), 200);
     }
 
-    private void handlePostSubTask(HttpExchange exchange) throws  IOException{
+    private void handlePostSubTask(HttpExchange exchange) throws IOException {
         Optional<SubTask> optionalSubTask = parseSubTask(exchange);
-        if (optionalSubTask.isEmpty()){
+        if (optionalSubTask.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         SubTask subTask = optionalSubTask.get();
         int subTaskId = subTask.getId();
-        if (subTaskId > 0){
-            if (manager.getSubTask(subTaskId) != null){
+        if (subTaskId > 0) {
+            if (manager.getSubTask(subTaskId) != null) {
                 manager.updateSubTask(subTask);
                 writeResponse(exchange, "", 201);
             } else {
@@ -114,8 +114,8 @@ public class SubTasksHandler extends Handler {
 
         } else {
             manager.addSubTask(subTask);
-            if (!manager.getAllSubTask().contains(subTask)){
-                writeResponse(exchange,notAcceptable, 406);
+            if (!manager.getAllSubTask().contains(subTask)) {
+                writeResponse(exchange, notAcceptable, 406);
                 return;
             }
             writeResponse(exchange, "", 201);
@@ -124,18 +124,18 @@ public class SubTasksHandler extends Handler {
 
     private void handleDeleteSubTask(HttpExchange exchange) throws IOException {
         Optional<Integer> optionalSubTaskId = getSubTaskId(exchange);
-        if (optionalSubTaskId.isEmpty()){
+        if (optionalSubTaskId.isEmpty()) {
             writeResponse(exchange, badRequest, 400);
             return;
         }
         int subTaskId = optionalSubTaskId.get();
-        if (manager.getSubTask(subTaskId) == null){
+        if (manager.getSubTask(subTaskId) == null) {
             writeResponse(exchange, notFound, 404);
             return;
         }
 
         manager.deleteSubTask(subTaskId);
-        if (manager.getTask(subTaskId) == null){
+        if (manager.getTask(subTaskId) == null) {
             writeResponse(exchange, "", 200);
         }
     }
@@ -152,7 +152,7 @@ public class SubTasksHandler extends Handler {
     private Optional<SubTask> parseSubTask(HttpExchange exchange) throws IOException {
         String body = new String(exchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
         JsonElement jsonElement = JsonParser.parseString(body);
-        if (jsonElement.isJsonObject()){
+        if (jsonElement.isJsonObject()) {
             SubTask subTask = gson.fromJson(jsonElement, SubTask.class);
             return Optional.of(subTask);
         } else {

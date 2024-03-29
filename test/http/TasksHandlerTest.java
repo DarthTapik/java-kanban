@@ -42,11 +42,11 @@ public class TasksHandlerTest {
 
 
     @BeforeEach
-    void beforeEach(){
-        task = new Task("Название","Описание", Duration.ofMinutes(15),
-                LocalDateTime.of(2024, Month.MARCH, 20,6, 0));
-        task1 = new Task("Название 1","Описание 1", Duration.ofMinutes(15),
-                LocalDateTime.of(2024, Month.MARCH, 20,7, 0));
+    void beforeEach() {
+        task = new Task("Название", "Описание", Duration.ofMinutes(15),
+                LocalDateTime.of(2024, Month.MARCH, 20, 6, 0));
+        task1 = new Task("Название 1", "Описание 1", Duration.ofMinutes(15),
+                LocalDateTime.of(2024, Month.MARCH, 20, 7, 0));
         manager = new InMemoryTaskManager();
         manager.deleteAll();
         try {
@@ -58,12 +58,12 @@ public class TasksHandlerTest {
     }
 
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         taskServer.stop();
     }
 
     @Test
-    void getTaskHandle(){
+    void getTaskHandle() {
         manager.addTask(task);
         manager.addTask(task1);
 
@@ -78,7 +78,8 @@ public class TasksHandlerTest {
             assertEquals(200, response.statusCode());
             JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
             assertTrue(jsonObject.isJsonArray());
-            List tasksList = gson.fromJson(response.body(), new TypeToken<List<Task>>(){}.getType());
+            List tasksList = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+            }.getType());
             assertEquals(2, tasksList);
             assertTrue(tasksList.contains(task));
             assertTrue(tasksList.contains(task1));
@@ -90,7 +91,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void getTaskByIdHandle(){
+    void getTaskByIdHandle() {
         manager.addTask(task);
         manager.addTask(task1);
         int taskId = task.getId();
@@ -105,7 +106,7 @@ public class TasksHandlerTest {
             assertEquals(200, response.statusCode());
             JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
             assertTrue(jsonObject.isJsonObject());
-            Task taskFromJson = gson.fromJson(response.body(),task.getClass());
+            Task taskFromJson = gson.fromJson(response.body(), task.getClass());
             assertEquals(task, taskFromJson);
 
         } catch (Exception e) {
@@ -115,7 +116,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void getTaskByWrongIdHandleCheck(){
+    void getTaskByWrongIdHandleCheck() {
         int taskId = 3;
         URI uri = URI.create("http://localhost:8080/tasks/" + taskId);
         HttpRequest request = HttpRequest.newBuilder()
@@ -136,7 +137,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void postCreateTask(){
+    void postCreateTask() {
         String jsonTask = gson.toJson(task);
         URI uri = URI.create("http://localhost:8080/tasks/");
         HttpRequest request = HttpRequest.newBuilder()
@@ -173,7 +174,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void postCreateWrongTask(){
+    void postCreateWrongTask() {
         task.setDuration(Duration.ofDays(2));
         manager.addTask(task);
 
@@ -196,7 +197,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void postUpdateTask(){
+    void postUpdateTask() {
         manager.addTask(task);
         task.setName("Обновленная задача");
         String jsonTask = gson.toJson(task);
@@ -235,7 +236,7 @@ public class TasksHandlerTest {
     }
 
     @Test
-    void deleteTask(){
+    void deleteTask() {
         manager.addTask(task);
         URI uri = URI.create("http://localhost:8080/tasks/" + task.getId());
         HttpRequest request = HttpRequest.newBuilder()

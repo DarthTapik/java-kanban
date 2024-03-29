@@ -6,12 +6,12 @@ import manager.TaskManager;
 
 import java.io.IOException;
 
-public class HistoryHandler extends Handler{
+public class HistoryHandler extends Handler {
 
     private final TaskManager manager;
     private final Gson gson;
 
-    public HistoryHandler(TaskManager manager, Gson gson){
+    public HistoryHandler(TaskManager manager, Gson gson) {
         this.manager = manager;
         this.gson = gson;
     }

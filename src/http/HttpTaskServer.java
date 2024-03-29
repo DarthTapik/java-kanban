@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
     Gson gson;
     HttpServer taskServer;
+
     public HttpTaskServer(TaskManager manager) throws IOException {
-        taskServer = HttpServer.create(new InetSocketAddress(8080),0);
+        taskServer = HttpServer.create(new InetSocketAddress(8080), 0);
 
         LocalDateTimeAdapter localDateTimeAdapter = new LocalDateTimeAdapter();
         DurationAdapter durationAdapter = new DurationAdapter();
@@ -46,11 +47,11 @@ public class HttpTaskServer {
         taskServer.start();
     }
 
-    public void stop(){
+    public void stop() {
         taskServer.stop(0);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Path path = Path.of("src/resources/task.csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(path.toFile());
         try {
@@ -61,8 +62,8 @@ public class HttpTaskServer {
         try {
             HttpTaskServer taskServer = new HttpTaskServer(manager);
             System.out.println(manager.getAllTask());
-        } catch (IOException e){
-
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

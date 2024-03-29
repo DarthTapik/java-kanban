@@ -12,7 +12,7 @@ public class PrioritizedHandler extends Handler {
     private final TaskManager manager;
     private final Gson gson;
 
-    public PrioritizedHandler(TaskManager manager, Gson gson){
+    public PrioritizedHandler(TaskManager manager, Gson gson) {
         this.manager = manager;
         this.gson = gson;
     }
