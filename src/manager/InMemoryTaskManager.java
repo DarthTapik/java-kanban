@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Comparator<Task> taskComparator = new TaskByStartTimeComparator();
     private Set<Task> sortedList = new TreeSet<>(taskComparator);
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-    private int id = 0;
+    private int id = 1;
 
     public InMemoryTaskManager() {
         System.out.println("Менеджер задач инициализирован");
