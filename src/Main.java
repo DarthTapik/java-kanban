@@ -31,11 +31,11 @@ public class Main {
         epic1 = new Epic("Эпик с подзадачами","Описание");
         manager.addEpic(epic1);
 
-        subTask1 = new SubTask("Подзадача 1", "Описание", 1, Duration.ofMinutes(15), dateTime);
+        subTask1 = new SubTask("Подзадача 1", "Описание", 2, Duration.ofMinutes(15), dateTime);
         dateTime = dateTime.plusMinutes(16);
-        subTask2 = new SubTask("Подзадача 2", "Описание", 1, Duration.ofMinutes(15), dateTime);
+        subTask2 = new SubTask("Подзадача 2", "Описание", 2, Duration.ofMinutes(15), dateTime);
         dateTime = dateTime.plusMinutes(16);
-        subTask3 = new SubTask("Подзадача 3", "Описание", 1, Duration.ofMinutes(15), dateTime);
+        subTask3 = new SubTask("Подзадача 3", "Описание", 2, Duration.ofMinutes(15), dateTime);
         manager.addSubTask(subTask1);
         manager.addSubTask(subTask2);
         manager.addSubTask(subTask3);

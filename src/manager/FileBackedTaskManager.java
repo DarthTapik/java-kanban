@@ -275,7 +275,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     if (in.ready()) {
                         line = in.readLine();
-                        String history[] = line.split(",");
+                        String[] history = line.split(",");
                         for (int i = 0; i < history.length; i++) {
                             int id = Integer.parseInt(history[i]);
                             historyManager.add(super.findTask(id));
